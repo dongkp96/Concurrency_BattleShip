@@ -22,9 +22,9 @@ public enum ShipType{
     //constructor to set size for the enum, private because it needs to be for enums
 
     /**
-     * @Return an integer that indicates the Ship type's size
+     * @return an integer that indicates the Ship type's size
      * */
-    private int getSize(){
+    public int getSize(){
         return this.size;
     }
 
