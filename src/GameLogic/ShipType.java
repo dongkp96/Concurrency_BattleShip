@@ -22,7 +22,7 @@ public enum ShipType{
     /**
      * @Return an integer that indicates the Ship type's size
      * */
-    public int getSize(){
+    private int getSize(){
         return this.size;
     }
 
