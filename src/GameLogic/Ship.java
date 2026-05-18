@@ -53,14 +53,16 @@ public class Ship{
     *@return an integer denoting the ships size based on its type enum  
     */
     public int getShipSize(){
-        return this.type.size;
+        return this.type.getSize();
     }
 
-
-
-
-
-
+    /**
+     * 
+     * @return a ShipType enum denoting the ship's typing
+     */
+    public ShipType getType(){
+        return this.type;
+    }
 
 
 

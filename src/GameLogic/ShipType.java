@@ -13,7 +13,7 @@ public enum ShipType{
     * it will call the constructor and set the field
     * */
 
-    public final int size;
+    private final int size;
     //field to hold the size, final because it won't change
 
     private ShipType(int size){

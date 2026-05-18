@@ -34,41 +34,45 @@ public class PlayerBoard {
      * @param intakes an int array containing 2 integers serving as move coordinates
      * @return a boolean to indicate if the 
      */
-    public boolean processShot(int[] move){
+    public String processShot(int[] move){
         if(move.length > 2){
-            return false;
+            return "INVALID";
             //checks if move coordinates entered were against the rules
         }
 
         if(move[0] < 0 || move[0] > (this.gameBoard.length-1)){
-            return false;
+            return "INVALID";
             //checks if the first move coordinate is within game board bounds of the rows
         }else if(move[1] < 0 || move[1]> (this.gameBoard[0].length-1)){
-            return false;
+            return "INVALID";
             //checks if the second move coordinate is within game board bounds of the columns
         }
 
         if(this.gameBoard[move[0]][move[1]] == CellState.EMPTY){
             this.gameBoard[move[0]][move[1]] = CellState.MISS;
-            return true;
+            return "MISS";
             //Checks if the CellState is empty, which means the player missed
         }else if(this.gameBoard[move[0]][move[1]] == CellState.SHIP){
             this.gameBoard[move[0]][move[1]] = CellState.HIT;
             for(Ship ship : this.shipList){
                 if(ship.checkIfHit(move)==true){
+                    if(ship.checkIsSunk()){
+                        return "SUNK:" + ship.getType();
+                    }
                     break;
                 }
             }
-            return true;
+
+            return "HIT";
             /*
             *Checks if the move hits a ship, if so then it will loop
             *through the shipList and call the checkIfHit() to process the logic
             *needed for a hit
             */
         }
-        return false;
+        return "INVALID";
         /*If the coordinates chosen does fall within bounds, but is not an EMPTY or SHIP cell state 
-        *then it falls into this return false statement
+        *then it falls into a repeat shot. 
         */
     }
 
@@ -207,6 +211,42 @@ public class PlayerBoard {
         }
         return sb.toString();
         // returns the completed board as a single string
+    }
+
+    /** 
+     * @return String to represent the current hit map
+    */
+    public String getHitMap(){
+        StringBuilder sb = new StringBuilder();
+        // initializes the StringBuilder that will build the board string
+        
+        sb.append("   ");
+        // adds spacing to align the column headers with the grid
+        for(int col = 0; col < this.gameBoard[0].length; col++){
+            sb.append(col + " ");
+            // appends each column number followed by a space
+        }
+        sb.append("|");
+        // pipe acts as newline separator for network transmission
+        
+        for(int row = 0; row < this.gameBoard.length; row++){
+            sb.append(row + "  ");
+            // appends the row number label followed by spacing
+            for(int col = 0; col < this.gameBoard[row].length; col++){
+                switch(this.gameBoard[row][col]){
+                    case EMPTY: sb.append("E "); break;
+                    case SHIP:  sb.append("E "); break;
+                    case HIT:   sb.append("H "); break;
+                    case MISS:  sb.append("M "); break;
+                    // appends the symbol for each CellState followed by a space
+                }
+            }
+            sb.append("|");
+            // pipe marks the end of each row, replacing the newline for network transmission
+        }
+        return sb.toString();
+        // returns the completed board as a single string
+
     }
 
 
