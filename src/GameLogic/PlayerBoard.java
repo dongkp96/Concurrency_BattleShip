@@ -1,12 +1,13 @@
 package GameLogic;
+import java.util.ArrayList;
 
 public class PlayerBoard {
     
-    private Ship[] shipList;
+    private ArrayList<Ship>shipList;
     private CellState[][] gameBoard;
 
     public PlayerBoard(){
-        this.shipList = new Ship[5];
+        this.shipList = new ArrayList<>();
         //ship list is 5 length array to contain the 5 ships 
 
         this.gameBoard = new CellState[10][10];
@@ -23,7 +24,7 @@ public class PlayerBoard {
     the ships have all been placed 
     */
     public boolean isReady(){
-        if(this.shipList.length == 5){
+        if(this.shipList.size() == 5){
             return true;
         }
         return false;
@@ -54,7 +55,7 @@ public class PlayerBoard {
         }else if(this.gameBoard[move[0]][move[1]] == CellState.SHIP){
             this.gameBoard[move[0]][move[1]] = CellState.HIT;
             for(Ship ship : this.shipList){
-                if(ship.checkIfHit(move)== true){
+                if(ship.checkIfHit(move)==true){
                     break;
                 }
             }
@@ -66,6 +67,9 @@ public class PlayerBoard {
             */
         }
         return false;
+        /*If the coordinates chosen does fall within bounds, but is not an EMPTY or SHIP cell state 
+        *then it falls into this return false statement
+        */
     }
 
     /**
@@ -75,7 +79,7 @@ public class PlayerBoard {
      * @return boolean to indicate if placing the ship on the desired coordinates was
      * successful or not 
      */
-    public boolean placeShip(int[] firstCoordinate, Direction direction, Ship ship){
+    public boolean placeShip(int[] firstCoordinate, Direction direction, ShipType type){
         if(this.isReady()){
             return false;
             //if the array is full of the ships we need, then this stops it
@@ -96,7 +100,7 @@ public class PlayerBoard {
 
 
         if(direction == direction.VERTICAL){
-            if(((firstCoordinate[0])+(ship.getShipSize()-1))>=this.gameBoard.length){
+            if(((firstCoordinate[0])+(type.getSize()-1))>=this.gameBoard.length){
                 return false;
                 //firstCoordinate is 7, ship size is 5 - 1 = 4 remaining slots = 7+4 = 11 out of bounds vertically
                 //firstCoordinate is 6, ship size is 5 - 1 - 4  remaing slots = 6+4 = 10 out of bounds vertically
@@ -104,47 +108,105 @@ public class PlayerBoard {
                 //grid is a 10x10 and with a 2D array, its 0-9 for the 10 slots 
             }
 
-            for(int i = firstCoordinate[0]; i < this.gameBoard.length; i++){
+            for(int i = firstCoordinate[0]; i < (firstCoordinate[0]+(type.getSize())); i++){
                 if(this.gameBoard[i][firstCoordinate[1]] == CellState.SHIP){
                     return false; 
                     //loops through that column and sees if there is any ship in those desired coordinates
                 }
             }
             
-            int shipParts = ship.getShipSize();
-            for(int i = firstCoordinate[0]; i < this.gameBoard.length; i++){
+            //int shipParts = type.getSize();
+            //used as a counter to know when the following placement loop is done
+            ArrayList<int[]> coordinates = new ArrayList<>();
+            //initializes the ArrayList that will hold the ArrayList of int[] arrays
+            for(int i = firstCoordinate[0]; i < (firstCoordinate[0]+type.getSize()); i++){
                  this.gameBoard[i][firstCoordinate[1]] = CellState.SHIP;
-                 shipParts -= 1;
-                 if(shipParts == 0){
+                 //accesses the gameboard 2D array and changes the block to CellState ship
+                 coordinates.add(new int[]{i, firstCoordinate[1]});
+                 //adds the 2 integer length int array to the coordinates ArrayList
+
+                //shipParts -= 1;
+                 //decrements the shipParts counter
+                 /*if(shipParts == 0){
                     break;
-                 }
+                    //stops the loop once the counter is done
+                 }*/
             }
-            //used to place the ships since all checks have been made
+            this.shipList.add(new Ship(type, coordinates));
+            //intializes the ship and places it in the ship list
+
+            
+            //used to place the ships in vertical since all checks have been made
             return true;
 
-
-            
-
-            
+      
         }else{
-            if((firstCoordinate[1]+(ship.getShipSize()-1))>=this.gameBoard[firstCoordinate[0]].length){
+            if((firstCoordinate[1]+(type.getSize()-1))>=this.gameBoard[firstCoordinate[0]].length){
                 return false;
                 //firstCoordinate, 2nd part is 6, ship size = 5-1 =4, remaining slots = 6+4 = 10, out of bounds horizontally
             }
+
+            for(int i = firstCoordinate[1]; i < (firstCoordinate[1]+(type.getSize())); i++){
+                if(this.gameBoard[firstCoordinate[0]][i] == CellState.SHIP){
+                    return false; 
+                    //loops through that row and sees if there is any ship in those desired coordinates
+                }
+            }
+            ArrayList<int[]> coordinates = new ArrayList<>();
+            //initializes the ArrayList that will hold the ArrayList of int[] arrays
+
+            for(int i = firstCoordinate[1]; i < (firstCoordinate[1] + type.getSize()); i++){
+                this.gameBoard[firstCoordinate[0]][i] = CellState.SHIP;
+                //accesses the gameboard 2D array and changes the block to CellState ship
+                coordinates.add(new int[]{firstCoordinate[0], i});
+                //adds the 2 integer length int array to the coordinates ArrayList
+            }
+
+            this.shipList.add(new Ship(type, coordinates));
+            //intializes the ship and places it in the ship list
+
+            
+            //used to place the ships in vertical since all checks have been made
+            return true;
+
         }
 
-
-
-
-
-        return false;
+        //return false;
     }
 
     /** 
      * @return String to represent the current board 
     */
     public String getBoard(){
-        return " ";
+        StringBuilder sb = new StringBuilder();
+        // initializes the StringBuilder that will build the board string
+        
+        sb.append("   ");
+        // adds spacing to align the column headers with the grid
+        for(int col = 0; col < this.gameBoard[0].length; col++){
+            sb.append(col + " ");
+            // appends each column number followed by a space
+        }
+        sb.append("|");
+        // pipe acts as newline separator for network transmission
+        
+        for(int row = 0; row < this.gameBoard.length; row++){
+            sb.append(row + "  ");
+            // appends the row number label followed by spacing
+            for(int col = 0; col < this.gameBoard[row].length; col++){
+                switch(this.gameBoard[row][col]){
+                    case EMPTY: sb.append("E "); break;
+                    case SHIP:  sb.append("S "); break;
+                    case HIT:   sb.append("H "); break;
+                    case MISS:  sb.append("M "); break;
+                    // appends the symbol for each CellState followed by a space
+                }
+            }
+            sb.append("|");
+            // pipe marks the end of each row, replacing the newline for network transmission
+        }
+        return sb.toString();
+        // returns the completed board as a single string
     }
 
 
