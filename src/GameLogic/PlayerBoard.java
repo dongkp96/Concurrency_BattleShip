@@ -103,7 +103,7 @@ public class PlayerBoard {
         }
 
 
-        if(direction == direction.VERTICAL){
+        if(direction == Direction.VERTICAL){
             if(((firstCoordinate[0])+(type.getSize()-1))>=this.gameBoard.length){
                 return false;
                 //firstCoordinate is 7, ship size is 5 - 1 = 4 remaining slots = 7+4 = 11 out of bounds vertically
