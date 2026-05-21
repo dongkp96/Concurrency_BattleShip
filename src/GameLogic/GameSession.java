@@ -1,6 +1,14 @@
 package GameLogic;
 import java.util.HashMap;
 
+/**
+ * GameSession class is responsible for holding the player boards in a HashMap 
+ * to differentiate which player owns which board, a turn indicator using the Color Enum, and 
+ * a boolean to check if the game is over.
+ * It works with client handler that will pass an input in to process a shot, which will also route 
+ * to the PlayerBoard class. Also has the responsibility of assigning the boards, switching turns,
+ * checking the turns, and checking if both boards are ready for game play. 
+ */
 public class GameSession {
     
     private HashMap<Color, PlayerBoard> playerBoards;
@@ -45,8 +53,6 @@ public class GameSession {
         boolean isReady = false;
         if(playerBoards.get(Color.BLACK)!= null && playerBoards.get(Color.WHITE) != null){
             isReady= playerBoards.get(Color.BLACK).isReady() && playerBoards.get(Color.WHITE).isReady();
-        }else if (playerBoards.get(Color.BLACK) == null || playerBoards.get(Color.WHITE) == null ){
-
         }
         return isReady;
     }
@@ -76,7 +82,7 @@ public class GameSession {
         //the turn equals conditional checking whose turn + ternary to switch if to White or Black
     }
 
-    
+
 
 
 }

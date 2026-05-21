@@ -1,6 +1,15 @@
 package GameLogic;
 import java.util.ArrayList;
 
+/**
+ * Note:
+ * Responsibility of this PlayerBoard class is to process shots, check if the board is
+ * ready during set up, placing the ships on the board, and returning a representation
+ * of the player's board with ships and their hit map.
+ * This serves as the entity for those actions with placing the ships and returning the 
+ * board and hit-map likely to the client handler/client. As well as processing shots
+ * that have been inputted into the Game Session.
+ */
 public class PlayerBoard {
     
     private ArrayList<Ship>shipList;
