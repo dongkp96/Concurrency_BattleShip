@@ -28,5 +28,11 @@ public enum ShipType{
         return this.size;
     }
 
+    /**
+     * Enum used to represent ship type and is used in placeShip() method
+     * of the Playerboard
+     * 
+     */
+
 
 }
