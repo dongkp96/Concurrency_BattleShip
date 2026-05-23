@@ -38,12 +38,31 @@ public class GameSession {
      * @return String that indicates if it was a hit, miss, or invalid move
      */
     public String processShot(int[] move, Color playerColor){
+        String result = "";
         if(playerColor == Color.BLACK){
-            return playerBoards.get(Color.WHITE).processShot(move);
+            result = playerBoards.get(Color.WHITE).processShot(move);
+            this.gameOver = playerBoards.get(Color.WHITE).isAllShipsSunk();
         }else{
-            return playerBoards.get(Color.BLACK).processShot(move);
+            result = playerBoards.get(Color.BLACK).processShot(move);
+            this.gameOver = playerBoards.get(Color.BLACK).isAllShipsSunk();
         }
+        return result;
 
+    }
+
+    /**
+     * @return Color enum indicating the winner, but if game over is not had then
+     * returns null
+     * */
+    public Color getWinner(){
+        if(!this.gameOver){
+            return null;
+        }
+        if(playerBoards.get(Color.BLACK).isAllShipsSunk()){
+            return Color.WHITE;
+        }else{
+            return Color.BLACK;
+        }
     }
 
     /**
@@ -68,17 +87,25 @@ public class GameSession {
 
     /**
      * 
-     * @return Color enum indicating whose turn it is 
+     * Uses While loop to check whose turn it is and if not the player's turn
+     * then calls wait
      */
-    public Color checkTurn(){
-        return this.turn;
+    public synchronized void checkTurn(Color playerColor) {
+        try{
+            while(this.turn != playerColor && !this.gameOver){
+                wait();
+            }
+        }catch(InterruptedException e){
+            System.out.println(e);
+        }
     }
 
     /**
-     * Switches the turn for the gameSession
+     * Switches the turn for the gameSession and notifies all
      */
-    public void switchTurn(){
+    public synchronized void switchTurn(){
         this.turn = (this.turn == Color.BLACK) ? Color.WHITE: Color.BLACK;
+        notifyAll();
         //the turn equals conditional checking whose turn + ternary to switch if to White or Black
     }
 

@@ -40,6 +40,25 @@ public class PlayerBoard {
     }
 
     /**
+     * @return boolean to indicate if all ships in Ship list is sunk
+     * used in game over check
+     * */
+    public boolean isAllShipsSunk(){
+        boolean allSunk = true;
+        if(this.shipList.isEmpty()){
+            return false;
+        }
+        for(Ship ship : shipList){
+            if(!ship.checkIsSunk()){
+                allSunk = false;
+            }
+
+        }
+        return allSunk;
+    }
+
+
+    /**
      * @param intakes an int array containing 2 integers serving as move coordinates
      * @return a boolean to indicate if the 
      */
