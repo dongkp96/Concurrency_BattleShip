@@ -52,9 +52,24 @@ public class GameSession {
                 notifyAll();
             }
         }
-
         return result;
 
+
+    }
+
+    /**
+     * @return Color enum indicating the winner, but if game over is not had then
+     * returns null
+     * */
+    public Color getWinner(){
+        if(!this.gameOver){
+            return null;
+        }
+        if(playerBoards.get(Color.BLACK).isAllSunk()){
+            return Color.WHITE;
+        }else{
+            return Color.BLACK;
+        }
     }
 
     /**
@@ -93,7 +108,7 @@ public class GameSession {
     }
 
     /**
-     * Switches the turn for the gameSession
+     * Switches the turn for the gameSession and notifies all
      */
     public synchronized void switchTurn(){
         this.turn = (this.turn == Color.BLACK) ? Color.WHITE: Color.BLACK;
