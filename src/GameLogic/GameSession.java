@@ -37,12 +37,23 @@ public class GameSession {
      * @param playerColor Color enum denoting which player's move it is
      * @return String that indicates if it was a hit, miss, or invalid move
      */
-    public String processShot(int[] move, Color playerColor){
+    public synchronized String processShot(int[] move, Color playerColor){
+        String result = "";
         if(playerColor == Color.BLACK){
-            return playerBoards.get(Color.WHITE).processShot(move);
+            result = playerBoards.get(Color.WHITE).processShot(move);
+            if(playerBoards.get(Color.WHITE).isAllSunk()){
+                this.gameOver = true;
+                notifyAll();
+            }
         }else{
-            return playerBoards.get(Color.BLACK).processShot(move);
+            result = playerBoards.get(Color.BLACK).processShot(move);
+            if(playerBoards.get(Color.BLACK).isAllSunk()){
+                this.gameOver = true;
+                notifyAll();
+            }
         }
+
+        return result;
 
     }
 
@@ -68,20 +79,35 @@ public class GameSession {
 
     /**
      * 
-     * @return Color enum indicating whose turn it is 
+     * Checks the turn and if it isn't the player's turn then causes them to wait()
      */
-    public Color checkTurn(){
-        return this.turn;
+    public synchronized void checkTurn(Color playerColor){
+        try{
+            while(this.turn != playerColor && !this.gameOver){
+                wait();
+            }
+        }catch(InterruptedException e){
+            System.out.println(e);
+        }
+  
     }
 
     /**
      * Switches the turn for the gameSession
      */
-    public void switchTurn(){
+    public synchronized void switchTurn(){
         this.turn = (this.turn == Color.BLACK) ? Color.WHITE: Color.BLACK;
+        notifyAll();
         //the turn equals conditional checking whose turn + ternary to switch if to White or Black
     }
 
+    /**
+     * Method to end the game and notifyAll monitoring the gameOver boolean
+     */
+    public synchronized void endGame(){
+        this.gameOver = true;
+        notifyAll();
+    }
 
 
 

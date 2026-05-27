@@ -40,8 +40,24 @@ public class PlayerBoard {
     }
 
     /**
+     * @return boolean that indicates if ships are all sunk
+     */
+    public boolean isAllSunk(){
+        boolean allSunk = true;
+        if(this.shipList.isEmpty()){
+            return false;
+        }
+        for(Ship ship : shipList){
+            if(!ship.checkIsSunk()){
+                allSunk = false;
+            }
+        }
+        return allSunk;
+    }
+
+    /**
      * @param intakes an int array containing 2 integers serving as move coordinates
-     * @return a boolean to indicate if the 
+     * @return a String to be processed by the clientHandler 
      */
     public String processShot(int[] move){
         if(move.length > 2){
