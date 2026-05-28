@@ -107,6 +107,7 @@ public class GameSession {
   
     }
 
+
     /**
      * Switches the turn for the gameSession and notifies all
      */
@@ -123,7 +124,6 @@ public class GameSession {
         this.gameOver = true;
         notifyAll();
     }
-
 
 
 }
