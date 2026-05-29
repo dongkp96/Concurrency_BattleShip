@@ -127,6 +127,13 @@ public class PlayerBoard {
             //checks if the second move coordinate is within game board bounds of the columns (0-9)
         }
 
+        for(Ship ship: this.shipList){
+            if(ship.getType() == type){
+                return false;
+            }
+        }
+        //checks if the ship has been placed before
+
 
         if(direction == Direction.VERTICAL){
             if(((firstCoordinate[0])+(type.getSize()-1))>=this.gameBoard.length){
