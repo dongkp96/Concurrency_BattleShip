@@ -92,6 +92,13 @@ public class GameSession {
         playerBoards.putIfAbsent(player, board);
     }
 
+    /***
+     *
+     * @return Color that is the current turn
+     */
+    public Color getTurn(){
+        return this.turn;
+    }
     /**
      * 
      * Checks the turn and if it isn't the player's turn then causes them to wait()
